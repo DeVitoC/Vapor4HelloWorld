@@ -2,6 +2,19 @@ import Vapor
 
 func routes(_ app: Application) throws {
 
+    // QUERY String
+    // /search?keyword=toys&page=12
+
+    app.get("search") { req -> String in
+
+        guard let keyword = req.query["keyword"] as String?,
+            let page = req.query["page"] as Int? else {
+                throw Abort(.badRequest)
+        }
+
+        return "Keyword = \(keyword) and page = \(page)"
+    }
+
     // http://127.0.0.1:8080
     app.get { req in
         return "ROOT"
@@ -28,6 +41,21 @@ func routes(_ app: Application) throws {
         }
 
         return "The Genre was \(name)"
+    }
+
+    // anything routes
+    // foo/bar/baz
+    // foo/xyz/baz
+    // foo/qwe/baz
+    app.get("foo", "*", "baz") { req -> String in
+        return "Foo somnething baz"
+    }
+
+    // catchall routes
+    // foo/bar
+    // foo/bar/baz
+    app.get("foo", "**") { req in
+        return "Foo catchall"
     }
 
     /*
