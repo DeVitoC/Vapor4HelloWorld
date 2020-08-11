@@ -58,16 +58,29 @@ func routes(_ app: Application) throws {
         return "Foo catchall"
     }
 
-    /*
-    // http://127.0.0.1:8080/movies/genre/fiction
-    app.get("movies", "genre", "fiction") { req in
-        return "/movies/genre/fiction"
+    // ROUTE GROUPS
+    // /users/12
+    // /users
+    // POST /users
+    let users = app.grouped("users")
+
+    // /users
+    users.get { req in
+        return "/users"
     }
 
-    // http://127.0.0.1:8080/movies/genre/comedy
-    app.get("movies", "genre", "comedy") { req in
-        return "/movies/genre/fiction"
+    // users/userID
+    users.get(":userID") { req -> String in
+        guard let userID = req.parameters.get("userID") else {
+            throw Abort(.badRequest)
+        }
+
+        return "userID = \(userID)"
     }
- */
+
+    // POST /users
+    users.post { req in
+        return "POST"
+    }
 
 }
