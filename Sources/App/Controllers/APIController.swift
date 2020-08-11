@@ -11,7 +11,7 @@ import Vapor
 struct User: Content {
     let name: String
     let age: Int
-    let address: Address
+    let address: Address?
 }
 
 struct Address: Content {
@@ -26,6 +26,7 @@ struct APIController: RouteCollection {
         let api = routes.grouped("api")
 
         api.get("users", use: getUsers)
+        api.post("users", use: create)
     }
 
     func getUsers(req: Request) throws -> [User] {
@@ -36,5 +37,11 @@ struct APIController: RouteCollection {
         let address = Address(street: "1200 Richmond Ave", state: "TX", zipcode: "77098")
         let user = User(name: "John Doe", age: 32, address: address)
         return [user]
+    }
+
+    func create(req: Request) throws -> HTTPStatus {
+        let user = try req.content.decode(User.self)
+        print(user)
+        return HTTPStatus.ok
     }
 }
